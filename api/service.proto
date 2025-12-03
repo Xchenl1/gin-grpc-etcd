@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package service;
+option go_package = "../pkg/proto";
+
+service TaskService {
+  rpc ProcessTask (TaskRequest) returns (TaskResponse);
+  rpc BatchProcessTask (BatchTaskRequest) returns (stream TaskResponse);
+}
+
+// 单个任务请求
+message TaskRequest {
+  string task_id = 1;    // 任务唯一ID
+  string param = 2;      // 任务参数
+  int32 timeout = 3;     // 超时时间
+}
+
+// 单个任务响应
+message TaskResponse {
+  string task_id = 1;
+  bool success = 2;
+  string result = 3;     // 处理结果
+  string error_msg = 4;  // 错误信息（失败时）
+  string node_addr = 5;  // 处理节点地址
+}
+
+// 批量任务请求
+message BatchTaskRequest {
+  repeated string params = 1; // 多个任务参数
+  int32 parallel_num = 2;     // 并行处理节点数
+}
